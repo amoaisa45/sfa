@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carrinho - Bloodlineralph</title>
+    <link rel="stylesheet" href="src/styles/styles.css">
+    <link rel="stylesheet" href="src/styles/carrinho.css">
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <header>
+        <h1>Bloodlineralph - Carrinho</h1>
+        <nav>
+            <a href="index.html">Loja</a>
+            <a href="carrinho.html">Carrinho</a>
+        </nav>
+    </header>
+
+    <main id="carrinho-container">
+        <h2>Seu Carrinho</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Produto</th>
+                    <th>Quantidade</th>
+                    <th>Preço</th>
+                    <th>Remover</th>
+                </tr>
+            </thead>
+            <tbody id="lista-carrinho">
+                <!-- Itens do carrinho serão adicionados dinamicamente aqui -->
+            </tbody>
+        </table>
+        <div id="total-container">
+            Total: R$ <span id="total-valor">0.00</span>
+        </div>
+        <button id="pagar">Pagar com Mercado Pago</button>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Bloodlineralph - Todos os direitos reservados.</p>
+        <a href="#"><i class="fab fa-instagram"></i></a>
+        <a href="#"><i class="fab fa-tiktok"></i></a>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            let carrinho = JSON.parse(localStorage.getItem("carrinho")) || [];
+            atualizarCarrinho();
+
+            function atualizarCarrinho() {
+                let listaCarrinho = $("#lista-carrinho");
+                listaCarrinho.empty();
+                let total = 0;
+
+                carrinho.forEach((item, index) => {
+                    let precoTotal = item.preco * item.quantidade;
+                    total += precoTotal;
+                    listaCarrinho.append(`
+                        <tr>
+                            <td>${item.nome}</td>
+                            <td>${item.quantidade}</td>
+                            <td>R$ ${precoTotal.toFixed(2)}</td>
+                            <td><button class="remover-item" data-index="${index}">Remover</button></td>
+                        </tr>
+                    `);
+                });
+                $("#total-valor").text(total.toFixed(2));
+            }
+
+            $(document).on("click", ".remover-item", function() {
+                let index = $(this).data("index");
+                carrinho.splice(index, 1);
+                localStorage.setItem("carrinho", JSON.stringify(carrinho));
+                atualizarCarrinho();
+            });
+        })
